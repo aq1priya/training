@@ -2,14 +2,16 @@
 #include<stdlib.h>
 #include<string.h>
 
-srtuct node
+struct node
 {	char data;
 	struct node *next;
 };
- struct node *top = NULL;
+struct node *top = NULL;
+struct node *temp;
+
 void infix_to_postfix(char *);
-struct node* create_node(int data);
-int pop_node(struct node *top);
+struct node* create_node (char data);
+char pop_node(struct node *top);
 void push_node(char data);
 
 void main()
@@ -20,39 +22,56 @@ void main()
 }
 
 void infix_to_postfix(char *exp)
-{	int len, k=0;
+{	int len,i, k=0;
 	char operand;
-	char infix[50] = NULL;
-	char postfix[50] = NULL;
+	char infix[50];
+	char postfix[50];
 	strcpy(infix, exp);
 	len = strlen(exp);
-	for(i=0;i<len;i++)
-	{	operand = infix[i];
-		while (operand != '\0')
-		{	if(operand >= 'a' && operand <= 'z' || operand >= 'A' && operand <= 'Z')
-			{	postfix[k++]= operand;
+	for(i=0;i<len;i++){
+		operand = infix[i];
+		
+			if(operand >= 'a' && operand <= 'z' || operand >= 'A' && operand <= 'Z')
+			postfix[k++]= operand;
+			else{
+			    if(operand == '(')
+			    push_node(operand);
+			    else{
+				if( operand == '+' || operand == '-' || operand == '/' || operand == '*')
+				push_node(operand);
+				else{
+				    if(operand == ')')
+				    {   pop_node(top);
+					 while (top != NULL)
+					 {
+					  if(top -> data != '('){
+					  postfix[k++] = top -> data;
+					  top = top -> next;}
+					  else{
+					  pop_node(top); 
+					  top = top -> next;}
+					  //pop_node(top);
+					 // postfix[k++] = top -> data;}
+					  //pop_node(top);}
+					  break;
+				    } 
+				    }
+				} 
+			   }
 			}
-			else
-			{	if(operand == '(')
-			     	push_node(operand);
-			     	else if( operand == '+' || operand == '-' || operand == '/' || operand == '*')
-				      push_node(operand);
-				     else if(operand == ')'	
-			 	
+	}
 
-int check_spaces(char ch)
-{ if (ch == ' '|| ch == '\t')
-	return 1;
- else
-	continue ;
+printf("infix: %s \n", infix);
+printf("postfix: %s \n", postfix);	 	
 }
 
-struct node* create_node(int data)
+
+struct node* create_node(char data)
 {	struct node *temp = (struct node *) malloc(sizeof (struct node));
-        ptr->data = data;
-        ptr->next = NULL;
+        temp -> data = data;
+        temp -> next = NULL;
 }
-void push_node(int data)
+void push_node(char data)
 {	struct node *temp = create_node(data);
 	if(top == NULL)
 	{	top = temp;
@@ -64,7 +83,7 @@ void push_node(int data)
 	}
 }
 
-int  pop_node(struct node *top)	
+char  pop_node(struct node *top)	
 {	temp = top;
 	if (top == NULL)
 	printf("stack is empty\n");
